@@ -65,4 +65,17 @@ public class DataStore {
     public List<Sensor> getAllSensors() {
         return new ArrayList<>(sensors.values());
     }
+
+    public List<Sensor> getSensorsByType(String type) {
+        if (type == null || type.isEmpty()) {
+            return getAllSensors();
+        }
+        List<Sensor> filtered = new ArrayList<>();
+        for (Sensor s : sensors.values()) {
+            if (type.equalsIgnoreCase(s.getType())) {
+                filtered.add(s);
+            }
+        }
+        return filtered;
+    }
 }
