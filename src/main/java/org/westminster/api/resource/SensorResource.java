@@ -2,6 +2,7 @@ package org.westminster.api.resource;
 
 import org.westminster.api.model.Sensor;
 import org.westminster.api.repository.DataStore;
+import org.westminster.api.resource.SensorReadingResource;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -68,6 +69,15 @@ public class SensorResource {
         // Build location URI
         URI uri = uriInfo.getAbsolutePathBuilder().path(sensor.getId()).build();
         return Response.created(uri).entity(sensor).build();
+    }
+
+    /**
+     * Sub-resource locator for readings.
+     * Routes requests from {sensorId}/readings to SensorReadingResource.
+     */
+    @Path("/{sensorId}/readings")
+    public SensorReadingResource getReadingResource(@PathParam("sensorId") String sensorId) {
+        return new SensorReadingResource(sensorId);
     }
 
     /**

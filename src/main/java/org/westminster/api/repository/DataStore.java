@@ -2,11 +2,13 @@ package org.westminster.api.repository;
 
 import org.westminster.api.model.Room;
 import org.westminster.api.model.Sensor;
+import org.westminster.api.model.SensorReading;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * In-memory data store for the Smart Campus API.
@@ -16,6 +18,7 @@ public class DataStore {
     private static DataStore instance;
     private final Map<String, Room> rooms = new ConcurrentHashMap<>();
     private final Map<String, Sensor> sensors = new ConcurrentHashMap<>();
+    private final Map<String, List<SensorReading>> readings = new ConcurrentHashMap<>();
 
     private DataStore() {}
 
@@ -77,5 +80,21 @@ public class DataStore {
             }
         }
         return filtered;
+    }
+
+    // Reading Operations
+    public void addReading(String sensorId, SensorReading reading) {
+        // Appends to historical log
+        readings.computeIfAbsent(sensorId, k -> new CopyOnWriteArrayList<>()).add(reading);
+        
+        // Side Effect: Update Parent Sensor's currentValue
+        Sensor sensor = sensors.get(sensorId);
+        if (sensor != null) {
+            sensor.setCurrentValue(reading.getValue());
+        }
+    }
+
+    public List<SensorReading> getReadings(String sensorId) {
+        return readings.getOrDefault(sensorId, new ArrayList<>());
     }
 }
