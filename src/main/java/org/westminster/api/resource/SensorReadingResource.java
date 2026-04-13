@@ -1,5 +1,7 @@
 package org.westminster.api.resource;
 
+import org.westminster.api.exception.SensorUnavailableException;
+import org.westminster.api.model.Sensor;
 import org.westminster.api.model.SensorReading;
 import org.westminster.api.repository.DataStore;
 
@@ -45,9 +47,16 @@ public class SensorReadingResource {
      */
     @POST
     public Response addReading(SensorReading reading, @Context UriInfo uriInfo) {
-        if (dataStore.getSensor(sensorId) == null) {
+        Sensor parentSensor = dataStore.getSensor(sensorId);
+        if (parentSensor == null) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("Sensor not found: " + sensorId).build();
+        }
+
+        // Part 5: Check sensor status
+        String status = parentSensor.getStatus();
+        if ("MAINTENANCE".equalsIgnoreCase(status) || "OFFLINE".equalsIgnoreCase(status)) {
+            throw new SensorUnavailableException("Sensor " + sensorId + " is currently " + status + " and cannot accept new readings.");
         }
 
         if (reading.getId() == null || reading.getId().isEmpty()) {

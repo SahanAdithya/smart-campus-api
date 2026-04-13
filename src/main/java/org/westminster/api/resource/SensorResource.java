@@ -1,5 +1,6 @@
 package org.westminster.api.resource;
 
+import org.westminster.api.exception.LinkedResourceNotFoundException;
 import org.westminster.api.model.Sensor;
 import org.westminster.api.repository.DataStore;
 import org.westminster.api.resource.SensorReadingResource;
@@ -45,11 +46,7 @@ public class SensorResource {
     public Response registerSensor(Sensor sensor, @Context UriInfo uriInfo) {
         // Validate roomId exists
         if (sensor.getRoomId() == null || dataStore.getRoom(sensor.getRoomId()) == null) {
-            // Part 5: "HTTP 422 Unprocessable Entity (or a 400 Bad Request)"
-            // Image evaluation criteria: "Accurate: Foreign key validation is correct."
-            return Response.status(422) // Unprocessable Entity
-                    .entity(new ErrorMessage("Invalid roomId: Reference to room '" + sensor.getRoomId() + "' does not exist."))
-                    .build();
+            throw new LinkedResourceNotFoundException("Invalid roomId: Reference to room '" + sensor.getRoomId() + "' does not exist.");
         }
 
         // Basic validation for sensor ID

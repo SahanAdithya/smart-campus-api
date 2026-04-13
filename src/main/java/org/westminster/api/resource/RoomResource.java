@@ -1,5 +1,6 @@
 package org.westminster.api.resource;
 
+import org.westminster.api.exception.RoomNotEmptyException;
 import org.westminster.api.model.Room;
 import org.westminster.api.repository.DataStore;
 
@@ -87,10 +88,7 @@ public class RoomResource {
         
         // Business Rule: Check if room has sensors
         if (!room.getSensorIds().isEmpty()) {
-            // Part 5: "409 Conflict with a JSON body explaining that the room is currently occupied by active hardware"
-            return Response.status(Response.Status.CONFLICT)
-                    .entity(new ErrorResponse("Room " + roomId + " cannot be deleted as it has active sensors assigned."))
-                    .build();
+            throw new RoomNotEmptyException("Room " + roomId + " cannot be deleted as it has active sensors assigned.");
         }
         
         boolean deleted = dataStore.deleteRoom(roomId);

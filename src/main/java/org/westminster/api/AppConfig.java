@@ -10,8 +10,8 @@ import javax.ws.rs.ApplicationPath;
 @ApplicationPath("/api/v1")
 public class AppConfig extends ResourceConfig {
     public AppConfig() {
-        // Register resources by package
-        packages("org.westminster.api.resource");
+        // Register all API components (resources, mappers, filters)
+        packages("org.westminster.api");
         
         // Register Jackson for JSON support
         register(org.glassfish.jersey.jackson.JacksonFeature.class);
