@@ -351,7 +351,6 @@ curl -i http://localhost:8080/SmartCampusApi/api/v1/debug/error
 </ul>
 <p><strong>Best Practice: Sanitized Responses</strong> The API needs to produce sanitized responses. A simple JSON body with a status code, a brief error identifier and a safe generic message is enough for legitimate users without "giving away the farm." Security through obscurity isn't just "best practice" - it is an important line of defence that makes your system harder to attack.</p>
 
-<hr>
 
 <h3>10. Why is it advantageous to use JAX-RS filters for cross-cutting concerns like logging, rather than manually inserting Logger.info() statements inside every single resource method?</h3>
 <p>Logging is a cross cutting issue as it is applicable in numerous endpoints as opposed to a particular business operation. JAX-RS filters are suitable to such a liability since they are able to intercept requests and responses at a central point. This enables the use of logging behaviour to be specified only once and then uniformly across all resource methods.</p>
